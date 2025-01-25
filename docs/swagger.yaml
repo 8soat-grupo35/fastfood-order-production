@@ -1,0 +1,411 @@
+definitions:
+  CustomerDto:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  ItemDto:
+    properties:
+      category:
+        type: string
+      image_url:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  OrderDto:
+    properties:
+      customer_id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/OrderItemDto'
+        type: array
+      status:
+        type: string
+    type: object
+  OrderItemDto:
+    properties:
+      id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  OrderPaymentStatusDto:
+    properties:
+      status:
+        type: string
+    type: object
+  OrderStatusDto:
+    properties:
+      status:
+        type: string
+    type: object
+  domain.Customer:
+    properties:
+      cpf:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  domain.Item:
+    properties:
+      category:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      imageUrl:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    type: object
+  domain.Order:
+    properties:
+      created_at:
+        type: string
+      customer_id:
+        type: integer
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/domain.OrderItem'
+        type: array
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.OrderItem:
+    properties:
+      id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  presenters.OrderPaymentStatusPresenter:
+    properties:
+      payment_status:
+        type: string
+    type: object
+  presenters.OrderPresenter:
+    properties:
+      id:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/customer:
+    post:
+      consumes:
+      - application/json
+      description: Insert Customer
+      parameters:
+      - description: teste
+        in: body
+        name: CustomerToInsert
+        required: true
+        schema:
+          $ref: '#/definitions/CustomerDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Customer'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Insert Customer
+      tags:
+      - Customers
+  /v1/customer/cpf/{cpf}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a customer by their CPF
+      parameters:
+      - description: CPF of the customer
+        in: path
+        name: cpf
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Customer'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Get Customer by CPF
+      tags:
+      - Customers
+  /v1/item:
+    get:
+      consumes:
+      - application/json
+      description: List All Items
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Item'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: List Items
+      tags:
+      - Items
+    post:
+      consumes:
+      - application/json
+      description: Insert Item
+      parameters:
+      - description: teste
+        in: body
+        name: ItemToInsert
+        required: true
+        schema:
+          $ref: '#/definitions/ItemDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Item'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Insert Item
+      tags:
+      - Items
+  /v1/item/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Item
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: item deleted successfully
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Delete Item
+      tags:
+      - Items
+    put:
+      consumes:
+      - application/json
+      description: Update Item
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: teste
+        in: body
+        name: ItemToInsert
+        required: true
+        schema:
+          $ref: '#/definitions/ItemDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Item'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Update Item
+      tags:
+      - Items
+  /v1/orders:
+    get:
+      consumes:
+      - application/json
+      description: List All Orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Order'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: List Orders
+      tags:
+      - Orders
+  /v1/orders/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update Order Status
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Status to update Order
+        in: body
+        name: Order
+        required: true
+        schema:
+          $ref: '#/definitions/OrderStatusDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Order'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Update Order Status
+      tags:
+      - Orders
+  /v1/orders/{orderID}/payment/status:
+    get:
+      consumes:
+      - application/json
+      description: Get Order Payment Status
+      parameters:
+      - description: ID do pedido
+        in: path
+        name: orderID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/presenters.OrderPaymentStatusPresenter'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Get Order Payment Status
+      tags:
+      - Orders
+    put:
+      consumes:
+      - application/json
+      description: Update Order Payment Status
+      parameters:
+      - description: ID do pedido
+        in: path
+        name: orderID
+        required: true
+        type: integer
+      - description: UpdateBody
+        in: body
+        name: UpdateBody
+        required: true
+        schema:
+          $ref: '#/definitions/OrderPaymentStatusDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Update Order Payment Status
+      tags:
+      - Orders
+  /v1/orders/checkout:
+    post:
+      consumes:
+      - application/json
+      description: Insert Order
+      parameters:
+      - description: Order to create
+        in: body
+        name: Order
+        required: true
+        schema:
+          $ref: '#/definitions/OrderDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/presenters.OrderPresenter'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Insert Order
+      tags:
+      - Orders
+swagger: "2.0"
