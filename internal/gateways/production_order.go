@@ -2,7 +2,6 @@ package gateways
 
 import (
 	"context"
-	"fmt"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/entities"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/interfaces/repository"
 	"github.com/guregu/dynamo/v2"
@@ -40,8 +39,6 @@ func (p productionOrderGateway) GetByOrderId(orderId uint32) (order *entities.Pr
 }
 
 func (p productionOrderGateway) Create(order entities.ProductionOrder) (*entities.ProductionOrder, error) {
-	fmt.Println(order)
-	fmt.Println("passou aqui")
 	err := p.table.Put(order).Run(context.TODO())
 
 	if err != nil {
