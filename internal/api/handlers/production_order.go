@@ -1,10 +1,12 @@
 package handlers
 
 import (
-	"github.com/guregu/dynamo/v2"
 	"net/http"
 	"strconv"
 
+	"github.com/guregu/dynamo/v2"
+
+	"github.com/8soat-grupo35/fastfood-order-production/external"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/adapters/dto"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/gateways"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/interfaces/usecase"
@@ -17,7 +19,9 @@ type ProductionOrderHandler struct {
 }
 
 func NewProductionOrderHandler(db *dynamo.DB) ProductionOrderHandler {
-	productionOrderRepository := gateways.NewProductionOrderGateway(db)
+	productionOrderRepository := gateways.NewProductionOrderGateway(
+		external.NewDynamoAdapter(db),
+	)
 
 	return ProductionOrderHandler{
 		productionOrderUseCases: usecases.NewProductionOrderUseCase(

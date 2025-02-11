@@ -3,12 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
-	"github.com/go-playground/validator"
 	"net/http"
 
+	"github.com/go-playground/validator"
+
 	_ "github.com/8soat-grupo35/fastfood-order-production/docs"
+	"github.com/8soat-grupo35/fastfood-order-production/external"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/api/handlers"
-	"github.com/8soat-grupo35/fastfood-order-production/internal/external"
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
