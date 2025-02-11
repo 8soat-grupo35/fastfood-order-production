@@ -7,7 +7,7 @@ tmp_dir = "tmp"
 
 [build]
 # Array of commands to run before each build
-pre_cmd = ["go mod download", "swag init  --parseDependency --parseInternal -g ./cmd/api/main.go"]
+pre_cmd = [ "swag init  --parseDependency --parseInternal -g ./cmd/api/main.go"]
 # Just plain old shell command. You could use `make` as well.
 cmd = "go build -buildvcs=false -o ./build/api ./cmd/api "
 # Array of commands to run after ^C
@@ -77,5 +77,5 @@ keep_scroll = true
 # Enable live-reloading on the browser.
 [proxy]
   enabled = true
-  proxy_port = 8080
+  proxy_port = 8081
   app_port = 8000
