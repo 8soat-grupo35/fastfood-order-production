@@ -4,13 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/guregu/dynamo/v2"
-
-	"github.com/8soat-grupo35/fastfood-order-production/external"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/adapters/dto"
-	"github.com/8soat-grupo35/fastfood-order-production/internal/gateways"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/interfaces/usecase"
-	"github.com/8soat-grupo35/fastfood-order-production/internal/usecases"
 	"github.com/labstack/echo/v4"
 )
 
@@ -18,15 +13,10 @@ type ProductionOrderHandler struct {
 	productionOrderUseCases usecase.ProductionOrderUseCases
 }
 
-func NewProductionOrderHandler(db *dynamo.DB) ProductionOrderHandler {
-	productionOrderRepository := gateways.NewProductionOrderGateway(
-		external.NewDynamoAdapter(db),
-	)
+func NewProductionOrderHandler(usecase usecase.ProductionOrderUseCases) ProductionOrderHandler {
 
 	return ProductionOrderHandler{
-		productionOrderUseCases: usecases.NewProductionOrderUseCase(
-			productionOrderRepository,
-		),
+		productionOrderUseCases: usecase,
 	}
 }
 

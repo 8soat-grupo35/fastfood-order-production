@@ -10,6 +10,8 @@ import (
 	_ "github.com/8soat-grupo35/fastfood-order-production/docs"
 	"github.com/8soat-grupo35/fastfood-order-production/external"
 	"github.com/8soat-grupo35/fastfood-order-production/internal/api/handlers"
+	"github.com/8soat-grupo35/fastfood-order-production/internal/gateways"
+	"github.com/8soat-grupo35/fastfood-order-production/internal/usecases"
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -47,8 +49,14 @@ func newApp() *echo.Echo {
 		return echo.JSON(http.StatusOK, "Alive")
 	})
 
-	productionOrderHandler := handlers.NewProductionOrderHandler(external.DB)
-
+	productionOrderGateway := gateways.NewProductionOrderGateway(
+		external.NewDynamoAdapter(external.DB),
+	)
+	productionOrderHandler := handlers.NewProductionOrderHandler(
+		usecases.NewProductionOrderUseCase(
+			productionOrderGateway,
+		),
+	)
 	app.GET("/production/queue", productionOrderHandler.GetProductionOrderQueue)
 	app.POST("/production/order/send", productionOrderHandler.SendOrderToProduction)
 	app.PUT("/production/order/:orderId/status", productionOrderHandler.UpdateProductionOrderStatus)
