@@ -27,7 +27,4 @@ jobs:
         run: go generate ./...
       
       - name: Run tests
-        run: sudo go test $(go list ./internal/... | grep -v /mock) -coverprofile=profile.cov
-      
-      - name: Run coverage
-        run: go tool cover -func profile.cov
+        run: go test $(go list ./internal/... | grep -v /mock)
