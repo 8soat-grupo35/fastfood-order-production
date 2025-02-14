@@ -32,7 +32,18 @@ func TestProductionOrderGateway_GetAll(t *testing.T) {
 					},
 				}
 
-				mockAdapter.EXPECT().GetAll().Return(expectedOrders, nil).Times(1)
+				response := []map[string]interface{}{
+					{
+						"ID":     float64(1),
+						"Status": "RECEBIDO",
+					},
+					{
+						"ID":     float64(2),
+						"Status": "EM_PREPARACAO",
+					},
+				}
+
+				mockAdapter.EXPECT().GetAll().Return(response, nil).Times(1)
 
 				return expectedOrders
 			},
@@ -43,7 +54,7 @@ func TestProductionOrderGateway_GetAll(t *testing.T) {
 			SetupMocks: func() interface{} {
 				expectedValue := []entities.ProductionOrder{}
 
-				mockAdapter.EXPECT().GetAll().Return(expectedValue, errors.New("teste")).Times(1)
+				mockAdapter.EXPECT().GetAll().Return([]map[string]interface{}{}, errors.New("teste")).Times(1)
 
 				return expectedValue
 			},

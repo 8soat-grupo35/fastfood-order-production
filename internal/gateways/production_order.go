@@ -19,7 +19,12 @@ func (p productionOrderGateway) GetAll() (orders []entities.ProductionOrder, err
 		return []entities.ProductionOrder{}, err
 	}
 
-	orders = value.([]entities.ProductionOrder)
+	for _, item := range value {
+		orders = append(orders, entities.ProductionOrder{
+			OrderId: uint32(item["ID"].(float64)),
+			Status:  item["Status"].(string),
+		})
+	}
 
 	return orders, nil
 }

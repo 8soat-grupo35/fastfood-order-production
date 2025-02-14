@@ -29,7 +29,7 @@ type dynamoAdapter struct {
 
 type DynamoAdapter interface {
 	SetTable(table string)
-	GetAll() (value interface{}, err error)
+	GetAll() (value []map[string]interface{}, err error)
 	GetOneByKey(key string, valueKey interface{}) (value interface{}, err error)
 	Create(value interface{}) (err error)
 	UpdateValue(key string, valueKey interface{}, keyToUpdate string, valueToUpdate interface{}) (updatedValue interface{}, err error)
@@ -47,9 +47,9 @@ func (d *dynamoAdapter) SetTable(table string) {
 }
 
 // GetAll implements DynamoAdapter.
-func (d *dynamoAdapter) GetAll() (value interface{}, err error) {
+func (d *dynamoAdapter) GetAll() (value []map[string]interface{}, err error) {
 	err = d.db.Table(*d.table).Scan().All(context.TODO(), &value)
-	return
+	return value, err
 }
 
 func (d *dynamoAdapter) GetOneByKey(key string, valueKey interface{}) (value interface{}, err error) {

@@ -1,12 +1,10 @@
 version: '3'
 services:
   fastfood_app:
-    depends_on:
-      postgres:
-        condition: service_healthy  
     container_name: fastfood_app
     volumes:
       - ./:/app
+      - ~/.aws:/root/.aws:ro
     build: .
     ports:
       - "8000:8000"
