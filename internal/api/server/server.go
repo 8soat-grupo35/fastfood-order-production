@@ -18,8 +18,9 @@ import (
 
 func Start() {
 	cfg := external.GetConfig()
+
 	fmt.Println(context.Background(), fmt.Sprintf("Starting a server at http://%s", cfg.ServerHost))
-	app := newApp()
+	app := newApp(cfg)
 	app.Logger.Fatal(app.Start(cfg.ServerHost))
 }
 
@@ -37,9 +38,8 @@ func Start() {
 
 // @host localhost:8000
 // @BasePath /v1
-func newApp() *echo.Echo {
-	external.ConectaDB()
-
+func newApp(cfg external.Config) *echo.Echo {
+	database := external.ConectaDB(cfg)
 	app := echo.New()
 	app.Validator = &external.HandlerCustomValidator{
 		Validator: validator.New(),
@@ -50,7 +50,7 @@ func newApp() *echo.Echo {
 	})
 
 	productionOrderGateway := gateways.NewProductionOrderGateway(
-		external.NewDynamoAdapter(external.DB),
+		external.NewDynamoAdapter(database),
 	)
 	productionOrderHandler := handlers.NewProductionOrderHandler(
 		usecases.NewProductionOrderUseCase(

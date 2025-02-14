@@ -2,8 +2,9 @@ package external
 
 import (
 	"context"
-	"github.com/8soat-grupo35/fastfood-order-production/internal/entities"
 	"log"
+
+	"github.com/8soat-grupo35/fastfood-order-production/internal/entities"
 
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/guregu/dynamo/v2"
@@ -13,7 +14,7 @@ var (
 	DB *dynamo.DB
 )
 
-func ConectaDB() {
+func ConectaDB(config Config) *dynamo.DB {
 
 	cfg, err := awsconfig.LoadDefaultConfig(context.TODO(),
 		awsconfig.WithDefaultRegion("us-east-1"))
@@ -22,8 +23,11 @@ func ConectaDB() {
 		log.Println(err.Error())
 		log.Panic("Erro na conexao com banco de dados")
 	}
-	baseURL := "http://localhost:4566"
-	cfg.BaseEndpoint = &baseURL
+
+	if config.Environment == "development" {
+		baseURL := "http://localhost:4566"
+		cfg.BaseEndpoint = &baseURL
+	}
 
 	DB = dynamo.New(cfg)
 
@@ -32,4 +36,6 @@ func ConectaDB() {
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	return DB
 }

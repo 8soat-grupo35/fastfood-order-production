@@ -11,6 +11,7 @@ import (
 type Config struct {
 	ServerHost     string
 	DatabaseConfig DatabaseConfig
+	Environment    string
 }
 
 type DatabaseConfig struct {
@@ -41,6 +42,7 @@ func GetConfig() Config {
 				Password: cfg.GetString("database.password"),
 				DbName:   cfg.GetString("database.dbname"),
 			},
+			Environment: cfg.GetString("environment"),
 		}
 	})
 
