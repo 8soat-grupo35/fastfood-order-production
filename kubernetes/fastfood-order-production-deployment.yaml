@@ -18,7 +18,7 @@ spec:
       containers:
         - name: fastfood-order-production-app
           image: fastfood-order-production-app
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           env:
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
