@@ -16,8 +16,7 @@ var (
 
 func ConectaDB(config Config) *dynamo.DB {
 
-	cfg, err := awsconfig.LoadDefaultConfig(context.TODO(),
-		awsconfig.WithDefaultRegion("us-east-1"))
+	cfg, err := awsconfig.LoadDefaultConfig(context.TODO())
 
 	if err != nil {
 		log.Println(err.Error())
