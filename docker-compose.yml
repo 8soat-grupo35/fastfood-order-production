@@ -1,10 +1,10 @@
 version: '3'
 services:
   fastfood_app:
-    container_name: fastfood_app
+    container_name: fastfood_order_production_app
     volumes:
       - ./:/app
-      - ~/.aws:/root/.aws:ro
+      - ~/.aws:~/app/.aws:ro
     build: .
     ports:
       - "8000:8000"

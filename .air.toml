@@ -7,9 +7,9 @@ tmp_dir = "tmp"
 
 [build]
 # Array of commands to run before each build
-pre_cmd = [ "swag init  --parseDependency --parseInternal -g ./cmd/api/main.go"]
+pre_cmd = [ "swag init  --parseDependency --parseInternal -g ./main.go"]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -buildvcs=false -o ./build/api ./cmd/api "
+cmd = "go build -buildvcs=false -o ./build/api . "
 # Array of commands to run after ^C
 post_cmd = []
 # Binary file yields from `cmd`.

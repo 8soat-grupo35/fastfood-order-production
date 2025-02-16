@@ -1,0 +1,62 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+      AWS_REGION_DEFAULT:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+      CLUSTER_NAME:
+        required: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION_DEFAULT }}
+
+      - name: Create ECR repository
+        run: |
+          aws ecr describe-repositories --repository-names fastfood-order-production-app || aws ecr create-repository --repository-name fastfood-order-production-app
+
+      - name: Build Docker image
+        run: docker build -t fastfood-order-production-app:latest .
+
+      - name: Push Docker image to ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION_DEFAULT }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com
+          docker tag fastfood-order-production-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com/fastfood-order-production-app:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com/fastfood-order-production-app:latest
+
+      - name: Deploy to EKS
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION_DEFAULT }}
+          kubectl create secret generic aws-secrets \
+            --from-literal=access-key-id=$(aws configure get aws_access_key_id) \
+            --from-literal=secret-access-key=$(aws configure get aws_secret_access_key) \
+            --from-literal=access-session-token=$(aws configure get aws_session_token)
+          envsubst < kubernetes/fastfood-order-production-deployment.yaml | kubectl apply -f -
+          kubectl apply -f kubernetes/fastfood-order-production-service.yaml
+          kubectl apply -f kubernetes/fastfood-order-production-hpa.yaml
+          kubectl set image deployment/fastfood-order-production-app fastfood-order-production-app=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com/fastfood-order-production-app:latest
