@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.21.x'
+          fetch-depth: 0
       # You can test your matrix by printing the current Go version
       - name: Display Go version
         run: go version
@@ -28,3 +29,8 @@ jobs:
       
       - name: Run tests
         run: go test $(go list ./internal/... | grep -v /mock)
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
