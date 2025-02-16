@@ -28,7 +28,7 @@ jobs:
         run: go generate ./...
       
       - name: Run tests
-        run: go test $(go list ./internal/... | grep -v /mock)
+        run: go test -short -coverprofile=cov.out $(go list ./internal/... | grep -v /mock)
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
