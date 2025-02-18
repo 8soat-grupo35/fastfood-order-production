@@ -23,6 +23,18 @@ func TestGetProductionOrderQueue(t *testing.T) {
 			OrderId: 2,
 			Status:  entities.RECEIVED_STATUS,
 		},
+		{
+			OrderId: 3,
+			Status:  entities.IN_PREPARATION_STATUS,
+		},
+		{
+			OrderId: 4,
+			Status:  entities.FINISHED_STATUS,
+		},
+		{
+			OrderId: 5,
+			Status:  entities.DONE_STATUS,
+		},
 	}
 
 	mockRepo := mock_repository.NewMockProductionOrderRepository(ctrl)
