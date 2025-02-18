@@ -1,6 +1,7 @@
 package gateways
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/8soat-grupo35/fastfood-order-production/external"
@@ -41,7 +42,7 @@ func (p productionOrderGateway) GetByOrderId(orderId uint32) (order *entities.Pr
 		return order, err
 	}
 
-	order = value.(*entities.ProductionOrder)
+	order = p.convertDynamoToEntity(value)
 
 	return order, nil
 }
@@ -57,15 +58,23 @@ func (p productionOrderGateway) Create(order entities.ProductionOrder) (*entitie
 }
 
 func (p productionOrderGateway) Update(order entities.ProductionOrder) (updatedProductionOrder *entities.ProductionOrder, err error) {
+	fmt.Println(order)
 	value, err := p.dynamo.UpdateValue("ID", order.OrderId, "Status", order.Status)
 
 	if err != nil {
 		return nil, err
 	}
 
-	updatedProductionOrder = value.(*entities.ProductionOrder)
+	updatedProductionOrder = p.convertDynamoToEntity(value)
 
 	return updatedProductionOrder, nil
+}
+
+func (p productionOrderGateway) convertDynamoToEntity(item map[string]interface{}) *entities.ProductionOrder {
+	return &entities.ProductionOrder{
+		OrderId: uint32(item["ID"].(float64)),
+		Status:  item["Status"].(string),
+	}
 }
 
 func NewProductionOrderGateway(orm external.DynamoAdapter) repository.ProductionOrderRepository {

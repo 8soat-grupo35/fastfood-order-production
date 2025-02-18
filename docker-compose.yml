@@ -4,7 +4,7 @@ services:
     container_name: fastfood_order_production_app
     volumes:
       - ./:/app
-      - ~/.aws:~/app/.aws:ro
+      - ~/.aws:~/root/.aws:ro
     build: .
     ports:
       - "8000:8000"

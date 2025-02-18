@@ -18,6 +18,7 @@ import (
 
 func Start() {
 	cfg := external.GetConfig()
+	fmt.Println(cfg)
 
 	fmt.Println(context.Background(), fmt.Sprintf("Starting a server at http://%s", cfg.ServerHost))
 	app := newApp(cfg)

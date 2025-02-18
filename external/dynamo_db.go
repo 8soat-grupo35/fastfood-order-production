@@ -30,9 +30,9 @@ type dynamoAdapter struct {
 type DynamoAdapter interface {
 	SetTable(table string)
 	GetAll() (value []map[string]interface{}, err error)
-	GetOneByKey(key string, valueKey interface{}) (value interface{}, err error)
+	GetOneByKey(key string, valueKey interface{}) (value map[string]interface{}, err error)
 	Create(value interface{}) (err error)
-	UpdateValue(key string, valueKey interface{}, keyToUpdate string, valueToUpdate interface{}) (updatedValue interface{}, err error)
+	UpdateValue(key string, valueKey interface{}, keyToUpdate string, valueToUpdate interface{}) (updatedValue map[string]interface{}, err error)
 }
 
 func NewDynamoAdapter(db DynamoDatabase) DynamoAdapter {
@@ -52,7 +52,7 @@ func (d *dynamoAdapter) GetAll() (value []map[string]interface{}, err error) {
 	return value, err
 }
 
-func (d *dynamoAdapter) GetOneByKey(key string, valueKey interface{}) (value interface{}, err error) {
+func (d *dynamoAdapter) GetOneByKey(key string, valueKey interface{}) (value map[string]interface{}, err error) {
 	err = d.db.Table(*d.table).Get(key, valueKey).One(context.TODO(), &value)
 	return
 }
@@ -62,7 +62,7 @@ func (d *dynamoAdapter) Create(value interface{}) (err error) {
 	return
 }
 
-func (d *dynamoAdapter) UpdateValue(key string, valueKey interface{}, keyToUpdate string, valueToUpdate interface{}) (updatedValue interface{}, err error) {
+func (d *dynamoAdapter) UpdateValue(key string, valueKey interface{}, keyToUpdate string, valueToUpdate interface{}) (updatedValue map[string]interface{}, err error) {
 	err = d.db.Table(*d.table).Update(key, valueKey).
 		Set(keyToUpdate, valueToUpdate).
 		Value(context.TODO(), &updatedValue)
