@@ -95,7 +95,12 @@ func TestProductionOrderGateway_GetByOrderId(t *testing.T) {
 					Status:  "RECEBIDO",
 				}
 
-				mockAdapter.EXPECT().GetOneByKey("ID", uint32(1)).Return(expectedOrder, nil).Times(1)
+				response := map[string]interface{}{
+					"ID":     float64(1),
+					"Status": "RECEBIDO",
+				}
+
+				mockAdapter.EXPECT().GetOneByKey("ID", uint32(1)).Return(response, nil).Times(1)
 
 				return expectedOrder
 			},
@@ -106,7 +111,7 @@ func TestProductionOrderGateway_GetByOrderId(t *testing.T) {
 			SetupMocks: func() interface{} {
 				var expectedValue *entities.ProductionOrder = nil
 
-				mockAdapter.EXPECT().GetOneByKey("ID", uint32(1)).Return(expectedValue, errors.New("teste")).Times(1)
+				mockAdapter.EXPECT().GetOneByKey("ID", uint32(1)).Return(nil, errors.New("teste")).Times(1)
 
 				return expectedValue
 			},
@@ -117,7 +122,7 @@ func TestProductionOrderGateway_GetByOrderId(t *testing.T) {
 			SetupMocks: func() interface{} {
 				var expectedValue *entities.ProductionOrder = nil
 
-				mockAdapter.EXPECT().GetOneByKey("ID", uint32(1)).Return(expectedValue, errors.New("no item found")).Times(1)
+				mockAdapter.EXPECT().GetOneByKey("ID", uint32(1)).Return(nil, errors.New("no item found")).Times(1)
 
 				return expectedValue
 			},
@@ -207,12 +212,17 @@ func TestProductionOrderGateway_UpdateValue(t *testing.T) {
 		Status:  "RECEBIDO",
 	}
 
+	response := map[string]interface{}{
+		"ID":     float64(1),
+		"Status": "RECEBIDO",
+	}
+
 	testCases := []utils.TestCase{
 		{
 			Name: "should update the order successfully",
 			SetupMocks: func() interface{} {
 
-				mockAdapter.EXPECT().UpdateValue("ID", orderToUpdate.OrderId, "Status", orderToUpdate.Status).Return(&orderToUpdate, nil).Times(1)
+				mockAdapter.EXPECT().UpdateValue("ID", orderToUpdate.OrderId, "Status", orderToUpdate.Status).Return(response, nil).Times(1)
 
 				return &orderToUpdate
 			},
@@ -223,7 +233,7 @@ func TestProductionOrderGateway_UpdateValue(t *testing.T) {
 			SetupMocks: func() interface{} {
 				var expectedValue *entities.ProductionOrder = nil
 
-				mockAdapter.EXPECT().UpdateValue("ID", orderToUpdate.OrderId, "Status", orderToUpdate.Status).Return(expectedValue, errors.New("teste")).Times(1)
+				mockAdapter.EXPECT().UpdateValue("ID", orderToUpdate.OrderId, "Status", orderToUpdate.Status).Return(nil, errors.New("teste")).Times(1)
 
 				return expectedValue
 			},

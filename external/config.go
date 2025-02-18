@@ -33,6 +33,8 @@ func GetConfig() Config {
 		if err != nil {
 			fmt.Println(context.Background(), err, "could not load usecase configuration")
 		}
+
+		fmt.Println(cfg.GetString("environment"))
 		config = Config{
 			ServerHost: cfg.GetString("server.host"),
 			DatabaseConfig: DatabaseConfig{
@@ -51,6 +53,7 @@ func GetConfig() Config {
 
 func initConfig() (viper.Viper, error) {
 	cfg := viper.New()
+	cfg.AutomaticEnv()
 	var err error
 	initDefaults(cfg)
 	// workaround because viper does not resolve envs when unmarshalling
@@ -68,4 +71,5 @@ func initDefaults(config *viper.Viper) {
 	config.SetDefault("database.user", "root")
 	config.SetDefault("database.password", "root")
 	config.SetDefault("database.dbname", "root")
+	config.SetDefault("environment", "production")
 }

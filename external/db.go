@@ -2,6 +2,7 @@ package external
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/8soat-grupo35/fastfood-order-production/internal/entities"
@@ -23,8 +24,9 @@ func ConectaDB(config Config) *dynamo.DB {
 		log.Panic("Erro na conexao com banco de dados")
 	}
 
+	fmt.Println(config.Environment)
 	if config.Environment == "development" {
-		baseURL := "http://localhost:4566"
+		baseURL := "http://localstack:4566"
 		cfg.BaseEndpoint = &baseURL
 	}
 

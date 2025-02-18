@@ -30,6 +30,18 @@ jobs:
       - name: Run tests
         run: go test -short -coverprofile=cov.out $(go list ./internal/... | grep -v /mock)
 
+      - name: Set Up BDD Tests Dependencies
+        run: go install github.com/onsi/ginkgo/v2/ginkgo@latest
+
+      - name: Start test environment
+        run: docker compose -f docker-compose-test.yml up -d
+
+      - name: Pausa
+        run: sleep 40
+
+      - name: Run BDD tests
+        run: ginkgo -v ./integration/BDD
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
@@ -38,6 +50,7 @@ jobs:
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
+        if: github.ref == 'refs/heads/main'
         with:
           pollingTimeoutSec: 600
         env:
