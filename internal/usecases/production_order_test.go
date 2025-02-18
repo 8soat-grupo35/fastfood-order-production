@@ -2,11 +2,12 @@ package usecases
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/8soat-grupo35/fastfood-order-production/internal/entities"
 	mock_repository "github.com/8soat-grupo35/fastfood-order-production/internal/interfaces/repository/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestGetProductionOrderQueue(t *testing.T) {
@@ -31,8 +32,14 @@ func TestGetProductionOrderQueue(t *testing.T) {
 
 	queue, err := prodOrderUseCase.GetProductionOrderQueue()
 
+	oldQueue := entities.ProductionOrderQueue{
+		Orders: productionQueue,
+	}
+	oldQueue.RemoveFinishedOrders()
+	oldQueue.Sort()
+
 	assert.NoError(t, err)
-	assert.Equal(t, productionQueue, queue.Orders)
+	assert.Equal(t, oldQueue.Orders, queue.Orders)
 }
 
 func TestGetProductionOrderQueueError(t *testing.T) {

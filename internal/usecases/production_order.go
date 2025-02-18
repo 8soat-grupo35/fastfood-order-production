@@ -31,6 +31,9 @@ func (p *productionOrderService) GetProductionOrderQueue() (*entities.Production
 		Orders: productionOrders,
 	}
 
+	productionQueue.RemoveFinishedOrders()
+	productionQueue.Sort()
+
 	return &productionQueue, nil
 }
 
