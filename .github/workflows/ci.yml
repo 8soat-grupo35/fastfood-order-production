@@ -36,10 +36,8 @@ jobs:
       - name: Start test environment
         run: docker compose -f docker-compose-test.yml up -d
 
-      - name: Wait For test environment start
-        uses: actions/wait-for-seconds@v1
-        with:
-          seconds: 40 # Aguarda 10 segundos
+      - name: Pausa
+        run: sleep 40
 
       - name: Run BDD tests
         run: ginkgo -v ./integration/BDD
